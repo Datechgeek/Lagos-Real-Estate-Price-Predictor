@@ -10,12 +10,13 @@ st.set_page_config(
     page_title="Lagos Real Estate Price Predictor", page_icon="🏘️", layout="wide"
 )
 
-# Load model and town tiers
-model_dir = Path(
-    r"C:\Users\micah\OneDrive\Desktop\Data Science Projects\Real Estate in Lagos\models"
-)
+
+# Load model and town tiers - use relative paths
+model_dir = Path("models")  
 model_path = model_dir / "xgboost_lagos_housing_model.joblib"
 town_tiers_path = model_dir / "town_tiers.joblib"
+
+
 
 model = joblib.load(model_path)
 town_tiers = joblib.load(town_tiers_path)
