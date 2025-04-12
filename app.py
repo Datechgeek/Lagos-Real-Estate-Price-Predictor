@@ -4,30 +4,124 @@ import numpy as np
 import joblib
 import os
 from pathlib import Path
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.impute import SimpleImputer
+from xgboost import XGBRegressor
+from sklearn.linear_model import Ridge
+from sklearn.ensemble import RandomForestRegressor
 
 # Set page config
 st.set_page_config(
     page_title="Lagos Real Estate Price Predictor", page_icon="🏘️", layout="wide"
 )
 
-
-# Load model and town tiers - use relative paths
-model_dir = Path("models")  
+# Define paths - use relative paths for GitHub
+model_dir = Path("models")
 model_path = model_dir / "xgboost_lagos_housing_model.joblib"
 town_tiers_path = model_dir / "town_tiers.joblib"
+data_path = Path("data") / "nigeria_houses_data.csv"
 
+# Try to load the model, or train a new one if files aren't found
+@st.cache_resource
+def get_model_and_tiers():
+    try:
+        # Try to load saved model and tiers
+        if os.path.exists(model_path) and os.path.exists(town_tiers_path):
+            model = joblib.load(model_path)
+            town_tiers = joblib.load(town_tiers_path)
+            st.success("✅ Model loaded successfully!")
+            return model, town_tiers
+        else:
+            raise FileNotFoundError(f"Model files not found at {model_path}")
+    except Exception as e:
+        st.warning(f"⚠️ Could not load model files: {e}")
+        st.info("Training a new model... (this may take a minute)")
+        
+        # Load data for training
+        try:
+            if os.path.exists(data_path):
+                df = pd.read_csv(data_path)
+            else:
+                # Try alternative path formats
+                alt_path = "data/nigeria_houses_data.csv"
+                df = pd.read_csv(alt_path)
+                
+            df = df[df["state"] == "Lagos"]
+        except Exception as data_e:
+            st.error(f"❌ Could not load data: {data_e}")
+            st.stop()
+        
+        # Create location tiers
+        town_stats = df.groupby("town")["price"].agg(["median"]).reset_index()
+        town_tiers = {}
+        all_towns_median = df["price"].median()
+        
+        for _, row in town_stats.iterrows():
+            town = row["town"]
+            median = row["median"]
+            
+            if median > (all_towns_median * 2):
+                town_tiers[town] = "Premium"
+            elif median > all_towns_median:
+                town_tiers[town] = "Above Average"
+            elif median > (all_towns_median * 0.5):
+                town_tiers[town] = "Average"
+            else:
+                town_tiers[town] = "Value"
+        
+        # Add location tier to dataframe
+        df["location_tier"] = df["town"].map(town_tiers)
+        
+        # Split data
+        X = df.drop(columns=["price"])
+        y = df["price"]
+        
+        # Train new model
+        model = make_pipeline(
+            OneHotEncoder(handle_unknown="ignore", sparse_output=False),
+            SimpleImputer(),
+            XGBRegressor(random_state=42)
+        )
+        model.fit(X, y)
+        
+        # Create models directory if it doesn't exist
+        os.makedirs(model_dir, exist_ok=True)
+        
+        # Save model for future use if possible
+        try:
+            joblib.dump(model, model_path)
+            joblib.dump(town_tiers, town_tiers_path)
+            st.success("✅ Model saved for future use!")
+        except Exception as save_e:
+            st.warning(f"⚠️ Could not save model: {save_e}")
+        
+        st.success("✅ New model trained successfully!")
+        return model, town_tiers
 
-
-model = joblib.load(model_path)
-town_tiers = joblib.load(town_tiers_path)
-
+# Get model and town tiers
+model, town_tiers = get_model_and_tiers()
 
 # Load dataset to get dropdown options
 def load_dataset_info():
     try:
-        df = pd.read_csv(
-            r"C:\Users\micah\OneDrive\Desktop\Data Science Projects\Real Estate in Lagos\data\nigeria_houses_data.csv"
-        )
+        # Try multiple potential paths for GitHub deployment
+        for potential_path in [data_path, "data/nigeria_houses_data.csv", "../data/nigeria_houses_data.csv"]:
+            if os.path.exists(potential_path):
+                df = pd.read_csv(potential_path)
+                break
+        else:
+            # Fallback to using town_tiers if data file not found
+            st.warning("Using fallback options - please ensure data is uploaded to your repository")
+            return {
+                "towns": list(town_tiers.keys()),
+                "property_types": ["Flat", "House", "Apartment", "Duplex", "Bungalow"],
+                "bedrooms_range": range(1, 6),
+                "bathrooms_range": range(1, 6),
+                "toilets_range": range(1, 6),
+                "parking_range": range(0, 4),
+            }
+        
         # Filter for Lagos properties
         df = df[df["state"] == "Lagos"]
 
@@ -53,7 +147,7 @@ def load_dataset_info():
             "parking_range": parking_range,
         }
     except Exception as e:
-        st.error(f"Error loading dataset: {e}")
+        st.warning(f"Using fallback values - could not load dataset: {e}")
         # Fallback values
         return {
             "towns": list(town_tiers.keys()),
@@ -64,7 +158,6 @@ def load_dataset_info():
             "parking_range": range(0, 4),
         }
 
-
 # Function to format large numbers as naira
 def format_naira(amount):
     if amount >= 1_000_000_000:
@@ -73,7 +166,6 @@ def format_naira(amount):
         return f"₦{amount / 1_000_000:.2f} Million"
     else:
         return f"₦{amount:,.2f}"
-
 
 # Get dataset information
 dataset_info = load_dataset_info()
@@ -146,7 +238,6 @@ with prediction_col2:
 # Show prediction results
 if predict_button:
     with st.spinner("🔄 Calculating property value..."):
-        # Create input dataframe for prediction
         # Create input dataframe for prediction
         input_data = pd.DataFrame(
             {
