@@ -1,3 +1,4 @@
+
 ```markdown
 # 🏠 Lagos Real Estate Price Predictor
 
@@ -17,14 +18,13 @@ This pipeline focuses heavily on **Data Preprocessing** to handle the high varia
 
 ```mermaid
 graph LR
-    A[Raw Kaggle Data] -->|Ingestion| B(Data Cleaning Pipeline)
-    B -->|Outlier Removal & Imputation| C[Feature Engineering]
-    C -->|One-Hot Encoding Locations| D{ML Model Training}
-    D -->|Optimize Hyperparameters| E[Final Model .pkl]
-    
-    User[User Input] -->|Bedrooms, Location, Type| F[Inference Engine]
-    E -->|Load Weights| F
-    F -->|Predict Price| User
+A[Raw Kaggle Data] -->|Ingestion| B(Data Cleaning Pipeline)
+B -->|Outlier Removal & Imputation| C[Feature Engineering]
+C -->|One-Hot Encoding Locations| D{ML Model Training}
+D -->|Optimize Hyperparameters| E[Final Model .pkl]
+User[User Input] -->|Bedrooms, Location, Type| F[Inference Engine]
+E -->|Load Weights| F
+F -->|Predict Price| User
 
 ```
 
