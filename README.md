@@ -1,10 +1,13 @@
 
----
 
+```markdown
 # 🏠 Lagos Real Estate Price Predictor
+)
 
 A production-ready Machine Learning pipeline designed to estimate property prices in **Lagos, Nigeria**. This project ingests raw real estate listings, performs extensive feature engineering on location data (e.g., differentiating *Ikoyi* from *Ikorodu*), and serves price predictions via an interactive interface.
 
+> **🔴 Live Demo:** [Click here to test the application](https://lagos-real-estate-price-predictor.streamlit.app/)
+>
 > **📊 Data Source:** [Nigeria Houses and Prices Dataset (Kaggle)](https://www.kaggle.com/datasets/abdullahiyunus/nigeria-houses-and-prices-dataset)
 
 ## 🏗️ System Architecture
@@ -30,6 +33,8 @@ graph LR
 
 **Machine Learning:**
 
+**Deployment:**
+
 ## 🚀 Key Engineering Features
 
 * **Robust Data Cleaning Pipeline:** Implemented automated scripts to handle missing values and inconsistencies typical of scraped web data (e.g., normalizing "4 Bedroom Detached" vs "4br Detached").
@@ -40,36 +45,32 @@ graph LR
 ## 💻 How to Run Locally
 
 1. **Clone the repository**
+
 ```bash
-git clone https://github.com/Datechgeek/Lagos-Real-Estate-Price-Predictor.git
+git clone [https://github.com/Datechgeek/Lagos-Real-Estate-Price-Predictor.git](https://github.com/Datechgeek/Lagos-Real-Estate-Price-Predictor.git)
 cd Lagos-Real-Estate-Price-Predictor
 
 ```
 
-
 2. **Install dependencies**
+
 ```bash
 pip install -r requirements.txt
 
 ```
 
-
 3. **Run the analysis/app**
+
 ```bash
-# If using Streamlit
+# To run the web application
 streamlit run app.py
-# OR if using a script
-python main.py
 
 ```
-
-
 
 ## 📊 Insights from the Lagos Market
 
 * **Feature Importance:** As expected, `Location` and `Number of Bedrooms` are the dominant predictors of price, validating the model's alignment with real-world market dynamics.
-* **Model Accuracy:** The pipeline achieves a competitive R^2 score on the test set, effectively capturing the variance in property prices across different Lagos districts.
+* **Model Accuracy:** The pipeline achieves a competitive MAE score on the test set, effectively capturing the variance in property prices across different Lagos districts.
 
 ---
-
 
