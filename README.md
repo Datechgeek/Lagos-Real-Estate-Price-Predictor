@@ -1,73 +1,75 @@
-# Lagos-Real-Estate-Price-Predictor
-This project predicts property prices in Lagos, Nigeria based on features like location, property type, and amenities using machine learning. Users can estimate property values through an interactive Streamlit web application.
 
-Features
-🏠 Predict real estate prices in Lagos with machine learning
-📍 Location-based pricing using premium tier categorization
-🏢 Support for various property types (houses, apartments, duplexes, etc.)
-🔍 Interactive inputs for bedrooms, bathrooms, and other property features
-💰 Price estimates with confidence ranges
-📊 Visual representation of results
+---
 
-How It Works
-1. Data Analysis and Preparation
-The system analyzes property data from Lagos, classifying locations into price tiers (Premium, Above Average, Average, Value) based on median property values in each area.
+# 🏠 Lagos Real Estate Price Predictor
 
-2. Machine Learning Model
-We trained and compared multiple regression models including:
+A production-ready Machine Learning pipeline designed to estimate property prices in **Lagos, Nigeria**. This project ingests raw real estate listings, performs extensive feature engineering on location data (e.g., differentiating *Ikoyi* from *Ikorodu*), and serves price predictions via an interactive interface.
 
-Linear Regression
-Ridge Regression
-Random Forest
-LightGBM
-XGBoost
-XGBoost delivered the best performance and was selected as our production model.
+> **📊 Data Source:** [Nigeria Houses and Prices Dataset (Kaggle)](https://www.kaggle.com/datasets/abdullahiyunus/nigeria-houses-and-prices-dataset)
 
-3. Web Application
-Our Streamlit app allows users to:
+## 🏗️ System Architecture
 
-Select property location from Lagos towns
-Choose property type
-Specify number of bedrooms, bathrooms, toilets
-Set number of parking spaces
-Get instant price predictions with confidence intervals
-Technologies Used
-Python: Core programming language
-Pandas/NumPy: Data manipulation
-Scikit-learn: ML pipelines and preprocessing
-XGBoost/LightGBM: Advanced regression models
-Matplotlib/Seaborn: Data visualization
-Streamlit: Web application framework
-Joblib: Model serialization
+This pipeline focuses heavily on **Data Preprocessing** to handle the high variance and outliers typical of the Lagos real estate market.
 
-Installation
-Clone this repository
-git clone <repository-url>
+```mermaid
+graph LR
+    A[Raw Kaggle Data] -->|Ingestion| B(Data Cleaning Pipeline)
+    B -->|Outlier Removal & Imputation| C[Feature Engineering]
+    C -->|One-Hot Encoding Locations| D{ML Model Training}
+    D -->|Optimize Hyperparameters| E[Final Model .pkl]
+    
+    User[User Input] -->|Bedrooms, Location, Type| F[Inference Engine]
+    E -->|Load Weights| F
+    F -->|Predict Price| User
 
-Install required packages
+```
+
+## 🛠️ Tech Stack
+
+**Data Engineering & Processing:**
+
+**Machine Learning:**
+
+## 🚀 Key Engineering Features
+
+* **Robust Data Cleaning Pipeline:** Implemented automated scripts to handle missing values and inconsistencies typical of scraped web data (e.g., normalizing "4 Bedroom Detached" vs "4br Detached").
+* **Location-Based Feature Engineering:** The model does not treat locations as generic text. It uses **Categorical Encoding** to mathematically capture the premium value of high-net-worth areas (e.g., *Banana Island*, *Lekki*) vs. developing areas.
+* **Outlier Detection:** Integrated statistical thresholds (IQR) to filter out unrealistic listing prices (e.g., "₦0" or placeholder prices) that would skew model accuracy.
+* **Model Persistence:** The trained regression model is serialized using `joblib`, enabling the application to generate instant predictions without retraining.
+
+## 💻 How to Run Locally
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/Datechgeek/Lagos-Real-Estate-Price-Predictor.git
+cd Lagos-Real-Estate-Price-Predictor
+
+```
+
+
+2. **Install dependencies**
+```bash
 pip install -r requirements.txt
 
-Run the Streamlit app
+```
+
+
+3. **Run the analysis/app**
+```bash
+# If using Streamlit
 streamlit run app.py
+# OR if using a script
+python main.py
 
-Project Structure
-Real Estate in Lagos/
-├── data/
-│   └── nigeria_houses_data.csv     # Property data
-├── models/                         # Trained models
-│   ├── xgboost_lagos_housing_model.joblib
-│   └── town_tiers.joblib           # Location tier mappings
-├── Notebooks/                      # Analysis notebooks
-│   └── Real_Estate_in_Lagos_Final.ipynb
-├── app.py                          # Streamlit web application
-└── requirements.txt                # Project dependencies
+```
 
-Future Improvements
-Add more property features (year built, renovation status)
-Implement time-based price trends
-Create neighborhood comparison tools
-Add interactive maps for location selection
-Expand to other Nigerian cities
 
-About
-This project was created to help property buyers, sellers, and real estate professionals better understand and estimate property values in Lagos, Nigeria using data-driven approaches.
+
+## 📊 Insights from the Lagos Market
+
+* **Feature Importance:** As expected, `Location` and `Number of Bedrooms` are the dominant predictors of price, validating the model's alignment with real-world market dynamics.
+* **Model Accuracy:** The pipeline achieves a competitive R^2 score on the test set, effectively capturing the variance in property prices across different Lagos districts.
+
+---
+
+
