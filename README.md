@@ -71,10 +71,7 @@ streamlit run app.py
 ## 📊 Insights from the Lagos Market
 
 * **Feature Importance:** As expected, `Location` and `Number of Bedrooms` are the dominant predictors of price, validating the model's alignment with real-world market dynamics.
-* **Model Accuracy:** The pipeline achieves a competitive MAE score on the test set, effectively capturing the variance in property prices across different Lagos districts.
-
----
-
+* **Model Accuracy:** The pipeline achieves a competitive MAE (Mean Absolute Error) score on the test set, effectively capturing the variance in property prices across different Lagos districts.
 
 ```
 
