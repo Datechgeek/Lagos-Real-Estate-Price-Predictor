@@ -1,21 +1,16 @@
-
-```markdown
 # 🏠 Lagos Real Estate Price Predictor
-
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://lagos-real-estate-price-predictor.streamlit.app/)
 ![Python](https://img.shields.io/badge/Python-3.9%2B-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 A production-ready Machine Learning pipeline designed to estimate property prices in **Lagos, Nigeria**. This project ingests raw real estate listings, performs extensive feature engineering on location data (e.g., differentiating *Ikoyi* from *Ikorodu*), and serves price predictions via an interactive interface.
 
-> **🔴 Live Demo:** [Click here to test the application](https://lagos-real-estate-price-predictor.streamlit.app/)
+> **🔴 Live Demo:** <https://lagos-real-estate-price-predictor.streamlit.app/>
 >
 > **📊 Data Source:** [Nigeria Houses and Prices Dataset (Kaggle)](https://www.kaggle.com/datasets/abdullahiyunus/nigeria-houses-and-prices-dataset)
 
 ## 🏗️ System Architecture
-
 This pipeline focuses heavily on **Data Preprocessing** to handle the high variance and outliers typical of the Lagos real estate market.
-
 ```mermaid
 graph LR
 A[Raw Kaggle Data] -->|Ingestion| B(Data Cleaning Pipeline)
@@ -25,16 +20,15 @@ D -->|Optimize Hyperparameters| E[Final Model .pkl]
 User[User Input] -->|Bedrooms, Location, Type| F[Inference Engine]
 E -->|Load Weights| F
 F -->|Predict Price| User
-
 ```
 
 ## 🛠️ Tech Stack
 
-**Data Engineering & Processing:**
+**Data Engineering & Processing:** Pandas, NumPy, Scikit-learn
 
-**Machine Learning:**
+**Machine Learning:** Regression models (Linear Regression, Random Forest, etc.)
 
-**Deployment:**
+**Deployment:** Streamlit
 
 ## 🚀 Key Engineering Features
 
@@ -46,33 +40,22 @@ F -->|Predict Price| User
 ## 💻 How to Run Locally
 
 1. **Clone the repository**
-
 ```bash
-git clone [https://github.com/Datechgeek/Lagos-Real-Estate-Price-Predictor.git](https://github.com/Datechgeek/Lagos-Real-Estate-Price-Predictor.git)
+git clone https://github.com/Datechgeek/Lagos-Real-Estate-Price-Predictor.git
 cd Lagos-Real-Estate-Price-Predictor
-
 ```
 
 2. **Install dependencies**
-
 ```bash
 pip install -r requirements.txt
-
 ```
 
-3. **Run the analysis/app**
-
+3. **Run the application**
 ```bash
-# To run the web application
 streamlit run app.py
-
 ```
 
 ## 📊 Insights from the Lagos Market
 
 * **Feature Importance:** As expected, `Location` and `Number of Bedrooms` are the dominant predictors of price, validating the model's alignment with real-world market dynamics.
 * **Model Accuracy:** The pipeline achieves a competitive MAE (Mean Absolute Error) score on the test set, effectively capturing the variance in property prices across different Lagos districts.
-
-```
-
-```
